@@ -1,0 +1,7 @@
+body{
+  background-color: lightblue;
+  margin-top: 30px;
+}
+#Mycanvas{
+  border: solid 3px black;
+}

@@ -6,6 +6,7 @@ clear()
 class World{
   constructor(){
     this.gravity = 4;
+    this.objectSpeed = 10;
   }
   floor(){
     ctx.beginPath();

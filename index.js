@@ -2,8 +2,6 @@ const c = document.getElementById("Mycanvas");
 const ctx = c.getContext("2d");
 const btn = document.getElementById("jump")
 const stop = document.getElementById("stop")
-
-clear()
 class World{
   constructor(){
     this.gravity = 4;
@@ -87,6 +85,7 @@ class Bullet extends World{
   }
 }
 
+clear()
 let world = new World()
 let dyno = new Dyno()
 let bullet = new Bullet()
@@ -94,23 +93,21 @@ world.floor()
 dyno.show()
 
 redo()
-
 function redo(){
-  let time = 0
+  let time = 0;
   let game = setInterval(()=>{
-    time = dyno.jump(time)
-    if(time%50 == 20)bullet.create()
-    bullet.move()
+    time = dyno.jump(time);
+    if(time%50 == 20)bullet.create();
+    bullet.move();
     btn.addEventListener('click',()=>{time = 0});
-    if(time == 6) time--
+    if(time == 6) time--;
     if(bullet.obj.length != 0){
-      if(world.checkCollision(dyno,bullet.obj)) stopping(game)
+      if(world.checkCollision(dyno,bullet.obj)) stopping(game);
     }
-  },60)
+  },60);
   stop.addEventListener('click',()=>{stopping(game)});
 }
 function stopping(x){clearInterval(x)}
-
 function clear(){
   ctx.beginPath();
   ctx.fillStyle = "#fff8f8";

@@ -2,10 +2,14 @@ const c = document.getElementById("Mycanvas");
 const ctx = c.getContext("2d");
 const btn = document.getElementById("jump")
 const stop = document.getElementById("stop")
+const occ = document.getElementById("occ")
+const speed = document.getElementById("speed")
+const jumpbtn = document.getElementById("jump")
 class World{
   constructor(){
     this.gravity = 4;
-    this.objectSpeed = 10;
+    this.objectSpeed = 20;
+    this.occur = 40;
   }
   floor(){ //creates floor
     ctx.beginPath();
@@ -46,17 +50,17 @@ class Dyno extends World {
     ctx.fillStyle = "#fff8f8";
     ctx.fillRect(this.location[0][0],this.location[0][1]-1,this.location[1][0]+5,this.location[1][1]+1);//extra added just in case
   }
-  jump(time){ // JUMPS and omfg do i wanna die rn cause of this shit
+  jump(t){ // JUMPS and omfg do i wanna die rn cause of this shit
     this.remove();
-    let update = (this.jumpStrength*time - this.gravity*time*time/2)//S = ut - (1/2)gt^2
+    let update = (this.jumpStrength*t - this.gravity*t*t/2)//S = ut - (1/2)gt^2
     if(update >= 0){
-      this.location[0][1] -= ((this.jumpStrength-this.gravity*time>=0)?1:-1)*update;//checks derivative value.
+      this.location[0][1] -= ((this.jumpStrength-this.gravity*t>=0)?1:-1)*update;//checks derivative value.
       if(this.onFloor(this.location) == -1) this.location[0][1] = 210;
     }else this.location[0][1] = 210;
-    time = (time!=this.previousTime)?time + 1:time+2
-    this.previousTime = time-1;
+    t = (t!=this.previousTime)?t + 1:t+2
+    this.previousTime = t-1;
     this.show();
-    return time
+    return t
   }
 }
 class Bullet extends World{
@@ -94,16 +98,27 @@ dyno.show()
 
 redo()
 function redo(){
-  let time = 0;
+  let time = 0,timeJump = 0;
   let game = setInterval(()=>{
-    time = dyno.jump(time);
-    if(time%50 == 20)bullet.create();
+    timeJump = dyno.jump(timeJump);
+    if(timeJump%bullet.occur == 10){bullet.create();}
     bullet.move();
-    btn.addEventListener('click',()=>{time = 0});
-    if(time == 6) time--;
-    if(bullet.obj.length != 0){
-      if(world.checkCollision(dyno,bullet.obj)) stopping(game);
+    btn.addEventListener('click',()=>{timeJump = 0});
+    if(timeJump == 6) timeJump--;
+    jumpbtn.disabled = (world.onFloor(dyno.location) > 0)
+    if(bullet.obj.length != 0) if(world.checkCollision(dyno,bullet.obj)) stopping(game);
+    if(time%bullet.occur == 15){
+      let rand_bullet_addition = Math.floor(Math.random()*20)
+      console.log(rand_bullet_addition);
+      if( rand_bullet_addition == 10 ){bullet.create();bullet.create();}
+      if( rand_bullet_addition == 5 || rand_bullet_addition == 13 || rand_bullet_addition == 4) bullet.create();
+      bullet.objectSpeed += 2;
+      bullet.occur -= 1
     }
+    if(bullet.occur <= 15) stopping(game);
+    occ.innerHTML = "Occurence =>"+bullet.occur;
+    speed.innerHTML = "speed =>"+bullet.objectSpeed;
+    time++
   },60);
   stop.addEventListener('click',()=>{stopping(game)});
 }
